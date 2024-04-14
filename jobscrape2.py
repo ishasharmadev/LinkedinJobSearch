@@ -40,7 +40,7 @@ time.sleep(2)
 # Login Credentials
 # Again use find_element_by_xpath to find email and password
 # Reading txt file where we have our user credentials
-with open('C:/Users/Isha/Documents/Important Documents/user_credentials.txt', 'r',encoding="utf-8") as file:
+with open('C:/Users/gandh/Downloads/user_credentials.txt', 'r',encoding="utf-8") as file:
     user_credentials = file.readlines()
     user_credentials = [line.rstrip() for line in user_credentials]
 username = user_credentials[0]
@@ -82,7 +82,8 @@ driver.implicitly_wait(30)
 jobs_icon = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable((By.CLASS_NAME, 'global-nav__primary-link--active'))
 )
-
+scroll_script = "window.scrollBy(0, 1000);"
+driver.execute_script(scroll_script)
 # Click the Jobs icon
 jobs_icon.click()
 print("Clicked on the LinkedIn Jobs icon!")
@@ -107,7 +108,7 @@ print("Navigated to job search results.")
 try:
     # Wait for the job listings container to be visible
     print("Entered try")
-    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, "jobs-search-results__list")))
+    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, "scaffold-layout__list-container")))
 
     print("First executed")
     # Collect links for job offers
@@ -123,24 +124,40 @@ try:
         if job_link.startswith("https://www.linkedin.com/jobs/view"):
             links.add(job_link)
 
+
     # Output the collected job links
     print("Collected Job Links:")
     for link in links:
         print(link)
 
+    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "ember318")))
+    print("LAST JOB FOUND")
+
+    container_element = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, "jobs-search-results-list")))
+    print(container_element)
+    print("FOUND THE PLACE TO SCROLL")
+    scroll_script = "arguments[0].scrollBy(0, 500);"
+
+ 
+    # Scroll multiple times (adjust the range as needed)
+    for i in range(2):  # Example: Scroll 5 times
+        # Execute the JavaScript scroll command
+        print("SCROLL KIYA RE")
+        driver.execute_script(scroll_script, container_element)
+        time.sleep(1)
+
+
 except Exception as e:
     print(f"Error occurred: {e}")
-
-
-# While collecting the links, we need to scroll down for each job card
-# scroll down for each job element
-
-driver.execute_script("arguments[0].scrollIntoView();", job)
+print("OUT OF TRY BLOKCK")
 
 
 # Go to the next page
 # Linkedin doesn't have a next button so we identify button type in page numbers
-driver.find_element_by_xpath(f"//button[@aria-label='Page {page}']").click()
+WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CLASS_NAME, "scaffold-layout__list-container")))
+
+driver.find_element_by_xpath(f"//button[@aria-label='Page 2']").click()
+print("PAGE NUMBER BUTTON FOUND")
 time.sleep(3)
 
 
